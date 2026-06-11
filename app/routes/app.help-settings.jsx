@@ -28,26 +28,9 @@ import {
 } from "@shopify/polaris-icons";
 import { authenticate } from "../shopify.server";
 import { PlusIcon, DeleteIcon } from "@shopify/polaris-icons";
-import "react-quill-new/dist/quill.snow.css";
 import { marked } from "marked";
 
 export const dynamic = "force-dynamic";
-
-// Client-only loader for react-quill-new to avoid SSR issues in Remix
-function QuillEditor(props) {
-  const [Editor, setEditor] = useState(null);
-  useEffect(() => {
-    let mounted = true;
-    import("react-quill-new").then((mod) => {
-      if (mounted) setEditor(() => mod.default);
-    });
-    return () => {
-      mounted = false;
-    };
-  }, []);
-  if (!Editor) return <div style={{ minHeight: 300 }} />;
-  return <Editor {...props} />;
-}
 
 export const loader = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
@@ -843,31 +826,23 @@ export default function HelpSettingsPage() {
                                     variant="headingSm"
                                     fontWeight="semibold"
                                   >
-                                    Rich Text Editor
+                                    Content Editor
                                   </Text>
-
-                                  {/* Remove custom toolbar; use Quill toolbar */}
 
                                   <div style={{ border: "1px solid #E5E7EB" }}>
                                     <div style={{ minHeight: 220 }}>
-                                      <QuillEditor
-                                        theme="snow"
+                                      <textarea
                                         value={editContent}
-                                        onChange={setEditContent}
+                                        onChange={(event) =>
+                                          setEditContent(event.target.value)
+                                        }
                                         placeholder="Write your content here..."
-                                        modules={{
-                                          toolbar: [
-                                            [{ header: [1, 2, 3, false] }],
-                                            [
-                                              "bold",
-                                              "italic",
-                                              "underline",
-                                              "strike",
-                                            ],
-                                            [{ list: "ordered" }],
-                                            ["blockquote", "code"],
-                                            ["link", "clean"],
-                                          ],
+                                        style={{
+                                          width: "100%",
+                                          minHeight: 220,
+                                          border: 0,
+                                          padding: 12,
+                                          resize: "vertical",
                                         }}
                                       />
                                     </div>
