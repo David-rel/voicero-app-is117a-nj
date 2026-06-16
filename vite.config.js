@@ -65,6 +65,7 @@ export default defineConfig({
     tsconfigPaths(),
   ],
   build: {
+    target: "esnext",
     assetsInlineLimit: 0,
   },
   optimizeDeps: {
